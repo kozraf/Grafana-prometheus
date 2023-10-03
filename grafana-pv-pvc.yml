@@ -8,6 +8,8 @@ spec:
     storage: 2Gi
   accessModes:
     - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs-storage
   nfs:
     path: /srv/nfs/k8s/grafana-prometheus-pv/grafana
     server: 192.168.89.141
