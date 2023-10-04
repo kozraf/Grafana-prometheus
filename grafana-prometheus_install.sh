@@ -14,8 +14,10 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
 
-helm install grafana grafana/grafana --namespace grafana-prometheus --set persistence.enabled=true --set persistence.existingClaim=grafana-pvc
-helm install prometheus prometheus-community/prometheus --namespace grafana-prometheus --set server.persistence.enabled=true --set server.persistence.existingClaim=prometheus-pvc
+helm install grafana grafana/grafana --namespace grafana-prometheus --set persistence.enabled=true --set persistence.existingClaim=grafana-pvc --set service.type=NodePort --set service.nodePort=31111
+helm install prometheus prometheus-community/prometheus --namespace grafana-prometheus --set server.persistence.enabled=true --set server.persistence.existingClaim=prometheus-pvc --set server.service.type=NodePort --set server.service.nodePort=31112
+
+
 
 # Wait for all pods in all namespaces to be running
 while true; do
@@ -41,3 +43,5 @@ done
 
 kubectl get svc grafana
 kubectl get svc prometheus-server
+
+kubectl get secret --namespace grafana-prometheus grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
