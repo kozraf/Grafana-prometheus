@@ -1,14 +1,16 @@
 # Create NFS directories
-sudo mkdir -p /srv/nfs/k8s/grafana-prometheus-pv
-sudo chown nobody:nogroup /srv/nfs/k8s/grafana-prometheus-pv
-sudo chmod 777 /srv/nfs/k8s/grafana-prometheus-pv
+sudo mkdir -p /srv/nfs/k8s/grafana-prometheus-pv/grafana
+sudo chown nobody:nogroup /srv/nfs/k8s/grafana-prometheus-pv/grafana
+sudo chmod 777 /srv/nfs/k8s/grafana-prometheus-pv/grafana
+sudo mkdir -p /srv/nfs/k8s/grafana-prometheus-pv/prometheus
+sudo chown nobody:nogroup /srv/nfs/k8s/grafana-prometheus-pv/prometheus
+sudo chmod 777 /srv/nfs/k8s/grafana-prometheus-pv/prometheus
+
 
 kubectl create namespace grafana-prometheus
 
 kubectl apply -f grafana-pv-pvc.yml
 kubectl apply -f prometheus-pv-pvc.yml
-
-
 
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add grafana https://grafana.github.io/helm-charts
@@ -16,8 +18,6 @@ helm repo update
 
 helm install grafana grafana/grafana --namespace grafana-prometheus --set persistence.enabled=true --set persistence.existingClaim=grafana-pvc --set service.type=NodePort --set service.nodePort=31111
 helm install prometheus prometheus-community/prometheus --namespace grafana-prometheus --set server.persistence.enabled=true --set server.persistence.existingClaim=prometheus-pvc --set server.service.type=NodePort --set server.service.nodePort=31112
-
-
 
 # Wait for all pods in all namespaces to be running
 while true; do
