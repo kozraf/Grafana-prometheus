@@ -25,9 +25,12 @@ helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
 
 helm install grafana grafana/grafana --namespace grafana-prometheus --set persistence.enabled=true --set persistence.existingClaim=grafana-pvc --set service.type=NodePort --set service.nodePort=31111
-#helm install prometheus prometheus-community/prometheus --namespace grafana-prometheus --set server.persistence.enabled=true --set server.persistence.existingClaim=prometheus-pvc --set server.service.type=NodePort --set server.service.nodePort=31112
-helm install prometheus prometheus-community/prometheus --namespace grafana-prometheus --set server.persistence.enabled=true --set server.persistence.storageClass=nfs-storage \
-  --set server.persistence.size=2Gi \
+
+helm install prometheus prometheus-community/prometheus \
+  --namespace grafana-prometheus \
+  --set server.persistence.enabled=true \
+  --set server.persistence.storageClass=nfs-storage \
+  --set server.persistence.size=8Gi \
   --set server.persistence.accessModes={ReadWriteOnce} \
   --set alertmanager.persistence.enabled=true \
   --set alertmanager.persistence.storageClass=nfs-storage \
@@ -36,6 +39,9 @@ helm install prometheus prometheus-community/prometheus --namespace grafana-prom
   --set server.service.type=NodePort \
   --set server.service.nodePort=31112
 
+#Due to issue with helm chart - "set server.persistence.storageClass=nfs-storage " is ignored hence below patch for PVC
+sleep 5
+kubectl patch pvc prometheus-server -n grafana-prometheus --type='json' -p='[{"op": "replace", "path": "/spec/storageClassName", "value":"nfs-storage"}]'
 
 
 # Wait for all pods in all namespaces to be running
@@ -63,4 +69,10 @@ done
 kubectl get svc grafana
 kubectl get svc prometheus-server
 
+echo -e "********How to access Grafana & Prometheus*********"
+echo -e "1. Grafana - http://nodeip:31111"
+echo -e "2. Use 'kubectl get secret --namespace grafana-prometheus grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo' to get password for admin user "
 kubectl get secret --namespace grafana-prometheus grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+echo -e "3. Prometheus - http://nodeip:31112"
+echo -e "! Scroll up for more information in regards to Grafana / Prometheus !"
+
