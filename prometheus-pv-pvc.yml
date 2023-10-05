@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: prometheus-alertmanager-pv
+  name: storage-prometheus-alertmanager-0
   labels:
     purpose: alertmanager
 spec:
   capacity:
-    storage: 2Gi
+    storage: 8Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
@@ -15,11 +15,12 @@ spec:
   nfs:
     path: /srv/nfs/k8s/grafana-prometheus-pv/prometheus-alertmanager
     server: 192.168.89.141
+
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: prometheus-server-pv
+  name: prometheus-server
   labels:
     purpose: prometheus-server
 spec:
@@ -32,31 +33,3 @@ spec:
   nfs:
     path: /srv/nfs/k8s/grafana-prometheus-pv/prometheus-server
     server: 192.168.89.141
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: prometheus-pv
-spec:
-  capacity:
-    storage: 2Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: nfs-storage
-  nfs:
-    path: /srv/nfs/k8s/grafana-prometheus-pv/prometheus
-    server: 192.168.89.141
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: prometheus-pvc
-  namespace: grafana-prometheus
-spec:
-  storageClassName: nfs-storage
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
