@@ -17,8 +17,8 @@ sudo chmod 777 /srv/nfs/k8s/grafana-prometheus-pv/prometheus-server
 
 kubectl create namespace grafana-prometheus
 
-kubectl apply -f grafana-pv-pvc.yml
-kubectl apply -f prometheus-pv-pvc.yml
+kubectl apply -f /home/vagrant/RafK8clstr/Grafana-prometheus/grafana-pv-pvc.yml
+kubectl apply -f //home/vagrant/RafK8clstr/Grafana-prometheus/prometheus-pv-pvc.yml
 
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add grafana https://grafana.github.io/helm-charts
