@@ -66,8 +66,8 @@ while true; do
   break
 done
 
-kubectl get svc grafana
-kubectl get svc prometheus-server
+kubectl get svc grafana -n grafana-prometheus
+kubectl get svc prometheus-server -n grafana-prometheus
 
 echo -e "********How to access Grafana & Prometheus*********"
 echo -e "1. Grafana - http://nodeip:31111"
