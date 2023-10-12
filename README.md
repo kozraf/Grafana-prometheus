@@ -61,29 +61,32 @@ $ ./grafana-prometheus_install.sh
 
 1. Ensure Prometheus is Running and Accessible:
 
-Make sure the Prometheus pod is running and that its service is exposed so that Grafana can reach it. Given your current configuration, you've set up Prometheus to be accessible via a NodePort service. This means it should be accessible within the cluster and from outside, assuming you know the node's IP and the port.
-Add Prometheus as a Data Source in Grafana:
+Make sure the Prometheus pod is running and that its service is exposed so that Grafana can reach it. 
+Prometheus is accessible via a NodePort service. 
+This means it should be accessible within the cluster and from outside, assuming you know the node's IP and the port.
 
-2. Access the Grafana UI - it should be available at http://nodeip:31111.
+2. Add Prometheus as a Data Source in Grafana:
 
-3. Log in to Grafana. The default username is admin. You can retrieve the password using the command provided in your script:
+3. Access the Grafana UI - it should be available at http://nodeip:31111.
+
+4. Log in to Grafana. The default username is admin. You can retrieve the password using the command provided in your script:
 
 ```bash
 kubectl get secret --namespace grafana-prometheus grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 ```
-4. Once logged in, click on the gear icon (⚙️) on the left sidebar to open the "Configuration" menu.
-5. Click on "Data Sources" and then on the "Add data source" button.
-6. Choose "Prometheus" from the list of available data sources.
-7. In the HTTP section, set the URL to the internal service name of Prometheus, which would typically be something like http://prometheus-server.grafana-prometheus.svc.cluster.local:80. 
+5. Once logged in, click on the gear icon (⚙️) on the left sidebar to open the "Configuration" menu.
+6. Click on "Data Sources" and then on the "Add data source" button.
+7. Choose "Prometheus" from the list of available data sources.
+8. In the HTTP section, set the URL to the internal service name of Prometheus, which would typically be something like http://prometheus-server.grafana-prometheus.svc.cluster.local:80. 
 Kubernetes DNS will resolve this to the actual IP of the service.
 Click "Save & Test" to ensure Grafana can reach Prometheus.
 
-8. Set Up Dashboards:
+9. Set Up Dashboards:
 
 Once Prometheus is added as a data source, you can start creating dashboards in Grafana or import pre-made dashboards from Grafana's community dashboard site.
 For Kubernetes monitoring, there are many pre-made dashboards available that utilize Prometheus metrics.
 
-9. Alerting (Optional):
+10. Alerting (Optional):
 
 If you want to set up alerts, Grafana can use Prometheus as a backend for this. You can create alert rules in Grafana based on Prometheus metrics and have Grafana send notifications when those rules are triggered.
 
