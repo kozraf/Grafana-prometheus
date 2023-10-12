@@ -57,6 +57,38 @@ $ chmod +x grafana-prometheus_install.sh
 $ ./grafana-prometheus_install.sh
 ```
 
+## How to test it
+
+1. Ensure Prometheus is Running and Accessible:
+
+Make sure the Prometheus pod is running and that its service is exposed so that Grafana can reach it. Given your current configuration, you've set up Prometheus to be accessible via a NodePort service. This means it should be accessible within the cluster and from outside, assuming you know the node's IP and the port.
+Add Prometheus as a Data Source in Grafana:
+
+2. Access the Grafana UI - it should be available at http://nodeip:31111.
+
+3. Log in to Grafana. The default username is admin. You can retrieve the password using the command provided in your script:
+
+```bash
+kubectl get secret --namespace grafana-prometheus grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+```
+4. Once logged in, click on the gear icon (⚙️) on the left sidebar to open the "Configuration" menu.
+5. Click on "Data Sources" and then on the "Add data source" button.
+6. Choose "Prometheus" from the list of available data sources.
+7. In the HTTP section, set the URL to the internal service name of Prometheus, which would typically be something like http://prometheus-server.grafana-prometheus.svc.cluster.local:80. 
+Kubernetes DNS will resolve this to the actual IP of the service.
+Click "Save & Test" to ensure Grafana can reach Prometheus.
+
+8. Set Up Dashboards:
+
+Once Prometheus is added as a data source, you can start creating dashboards in Grafana or import pre-made dashboards from Grafana's community dashboard site.
+For Kubernetes monitoring, there are many pre-made dashboards available that utilize Prometheus metrics.
+
+9. Alerting (Optional):
+
+If you want to set up alerts, Grafana can use Prometheus as a backend for this. You can create alert rules in Grafana based on Prometheus metrics and have Grafana send notifications when those rules are triggered.
+
+#### Remember - make sure you'll change default password change it once you will login!
+
 ## Notes
 
 - Ensure the NFS server is accessible from your Kubernetes nodes.
